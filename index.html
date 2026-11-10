@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="referrer" content="no-referrer">
+<title>Prompt Studio — Reusable AI Prompt Builder</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light;--bg:#f5f6fa;--surface:#fff;--panel:#f8f9fb;--text:#182235;--muted:#59667b;--line:#dfe3ea;--accent:#2949c7;--accent2:#eaf0ff;--shadow:0 10px 35px #182b4c12}
+@media(prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#111827;--surface:#1d2737;--panel:#141e2d;--text:#f3f6fa;--muted:#b2bed0;--line:#3b4656;--accent:#698cf5;--accent2:#27395d;--shadow:0 10px 35px #0004}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);line-height:1.5}main{max-width:1180px;margin:0 auto;padding:24px}header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin:0 0 21px}h1{font-size:clamp(23px,3vw,30px);margin:0;letter-spacing:-.035em}h2{margin:0;font-size:17px}p{margin:5px 0;color:var(--muted)}.tag{font-size:12px;font-weight:650;border-radius:999px;background:var(--accent2);padding:6px 10px;color:var(--accent);white-space:nowrap}.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:21px;min-width:0}.field{margin-top:16px}label:not(.check){display:block;font-weight:650;font-size:13px;margin-bottom:6px}input[type=text],textarea,select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14px;padding:10px 12px;width:100%;outline-offset:2px}textarea{resize:vertical;min-height:82px}input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.check{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:13px}.check input{width:17px;height:17px;accent-color:var(--accent)}.note{font-size:12px;color:var(--muted)}.actions{display:flex;gap:9px;flex-wrap:wrap}.button{cursor:pointer;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font-size:13px;font-weight:700;padding:10px 15px}.button.primary{background:var(--accent);color:white;border-color:var(--accent)}.headrow{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.preview{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:17px;line-height:1.7;font:13px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;min-height:360px;max-height:650px;overflow:auto}#status{min-height:20px}footer{margin-top:18px;color:var(--muted);font-size:12px}.noscript{padding:12px;background:#fff0cc;color:#51380a}.hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media(max-width:750px){main{padding:14px}.layout{grid-template-columns:1fr}.card{padding:16px}.preview{min-height:280px;max-height:480px}}@media(max-width:410px){.two{grid-template-columns:1fr}.headrow{align-items:start;flex-direction:column}}
+</style>
+</head>
+<body>
+<main>
+<header><div><h1>Prompt Studio</h1><p>Reusable AI Prompt Builder · Browser-only · No API keys</p></div><span class="tag">v1.0 · Static</span></header>
+<noscript><div class="noscript">JavaScript is required to assemble prompts interactively.</div></noscript>
+<div class="layout">
+<section class="card" aria-labelledby="config-title">
+<div class="headrow"><h2 id="config-title">Configure your prompt</h2><button class="button" type="button" id="reset">Reset</button></div>
+<div class="field"><label for="category">Category</label><select id="category"><option value="general">General AI / ChatGPT</option><option value="image">AI Image Generation</option><option value="portrait">Identity-Preserving Portrait</option><option value="agent">AI Agent / MCP</option><option value="research">Research &amp; Analysis</option><option value="notion">Notion / Knowledge Capture</option><option value="code">Coding / Development</option><option value="video">AI Video Generation</option></select></div>
+<div class="field"><label for="role">AI role <span class="note">(optional override)</span></label><input id="role" type="text" autocomplete="off" placeholder="Use category default"></div>
+<div class="field"><label for="objective">Objective</label><textarea id="objective" placeholder="Describe the outcome you want"></textarea></div>
+<div class="field"><label for="context">Context and inputs</label><textarea id="context" placeholder="Background, sources, references, audience..."></textarea></div>
+<div class="field"><label for="constraints">Requirements and restrictions</label><textarea id="constraints" placeholder="Must-have rules, prohibited actions, quality goals..."></textarea></div>
+<div class="field two"><div><label for="format">Output format</label><select id="format"><option>Structured sections</option><option>Step-by-step instructions</option><option>Comparison table</option><option>JSON</option><option>Markdown / Notion-ready</option><option>Final prompt only</option></select></div><div><label for="detail">Detail level</label><select id="detail"><option>Concise</option><option selected>Detailed</option><option>Comprehensive</option></select></div></div>
+<label class="check"><input id="verify" type="checkbox" checked>Include quality assurance and verification</label>
+<label class="check"><input id="reuse" type="checkbox" checked>Include reusable placeholders</label>
+</section>
+<section class="card" aria-labelledby="preview-title">
+<div class="headrow"><div><h2 id="preview-title">Live generated prompt</h2><p class="note" id="count">Ready</p></div><div class="actions"><button class="button primary" type="button" id="copy">Copy prompt</button><button class="button" type="button" id="download">Save .txt</button></div></div>
+<div class="preview" id="preview" role="region" aria-label="Generated prompt" tabindex="0"></div>
+<p class="note" id="status" role="status" aria-live="polite">No prompt data is transmitted by this application.</p>
+</section>
+</div>
+<footer>Privacy: all inputs remain in memory in this browser tab. No analytics, external assets, server calls, automatic sync, or local storage. A publicly hosted app URL is not protected by the privacy of a Notion page embedding it.</footer>
+</main>
+<script>
+'use strict';
+(() => {
+ const categories = {
+  general: {role:'expert assistant',instructions:'Provide an actionable answer grounded in supplied information.'},
+  image: {role:'professional visual art director and image-generation specialist',instructions:'Describe subject, composition, artistic style, lighting, camera framing and visual quality. Avoid unintended text or artifacts.'},
+  portrait: {role:'identity-preserving portrait photographer, facial-anatomy specialist and retoucher',instructions:'Use the original saved or uploaded identity photograph as the sole facial identity authority. Creative references may guide expression, hairstyle, pose, clothing, lighting and composition but must not supply facial anatomy. Preserve distinctive features, natural asymmetry, skin texture and perceived age. Request unavailable identity sources.'},
+  agent: {role:'AI agent architect and MCP integration specialist',instructions:'Specify tools, permissions, input/output schemas, validation, error handling and security boundaries. Distinguish implemented from proposed capabilities.'},
+  research: {role:'senior research analyst',instructions:'Separate verified facts, interpretations and unknowns. Supply traceable sources and dates.'},
+  notion: {role:'Notion knowledge-management architect',instructions:'Reuse approved canonical pages and databases. Check for duplicates, preserve provenance, verify changes and avoid schema or sharing changes without authorization.'},
+  code: {role:'senior software engineer',instructions:'Include dependencies, implementation steps, test cases, error handling and verification commands.'},
+  video: {role:'cinematic director and AI video prompt engineer',instructions:'Specify subject motion, camera movement, shot duration, composition, lighting, continuity and transition behavior.'}
+ };
+ const $=id=>document.getElementById(id);
+ const fields=['category','role','objective','context','constraints','format','detail','verify','reuse'];
+ const read=(id,fallback)=>$(id).value.trim()||fallback;
+ const article=word=>/^[aeiou]/i.test(word)?'an':'a';
+ function assemble(){
+  const cat=categories[$('category').value];const role=read('role',cat.role);
+  const detail=$('detail').value;
+  const level=detail==='Concise'?'Concise and focused.':detail==='Comprehensive'?'Comprehensive, including edge cases and practical examples.':'Detailed, organized and practical.';
+  const parts=[
+   'ROLE\nAct as '+article(role)+' '+role+'.',
+   'OBJECTIVE\n'+read('objective','[Describe the desired result]'),
+   'CONTEXT AND INPUTS\n'+read('context','[Insert relevant inputs, references, background and source material]'),
+   'DOMAIN-SPECIFIC REQUIREMENTS\n'+cat.instructions,
+   'CONSTRAINTS\n'+read('constraints','Do not invent unavailable facts, sources or completed actions.'),
+   'OUTPUT FORMAT\n'+$('format').value+'.',
+   'DETAIL LEVEL\n'+level
+  ];
+  if($('verify').checked)parts.push('QUALITY ASSURANCE\nCheck completeness, internal consistency and compliance with constraints. State assumptions and limitations explicitly.');
+  if($('reuse').checked)parts.push('REUSABILITY\nUse clear variable placeholders for task-specific inputs. Preserve the structure for future reuse.');
+  return parts.join('\n\n');
+ }
+ let current='';
+ function render(){current=assemble();$('preview').textContent=current;$('count').textContent=current.length.toLocaleString()+' characters · '+current.trim().split(/\s+/).length.toLocaleString()+' words';}
+ fields.forEach(id=>{ $(id).addEventListener('input',render); $(id).addEventListener('change',render);});
+ $('reset').addEventListener('click',()=>{['role','objective','context','constraints'].forEach(id=>$(id).value='');$('category').value='general';$('format').value='Structured sections';$('detail').value='Detailed';$('verify').checked=$('reuse').checked=true;render();$('status').textContent='Configuration reset.';});
+ $('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(current);$('status').textContent='Prompt copied to clipboard.';}catch(e){$('status').textContent='Clipboard blocked in this browser or embed. Select the preview text and copy it manually, or use Save .txt.';}});
+ $('download').addEventListener('click',()=>{const blob=new Blob([current+'\n'],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ai-prompt.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('status').textContent='Text file requested; your browser may ask for download permission.';});
+ render();
+})();
+</script>
+</body>
+</html>
